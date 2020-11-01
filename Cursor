@@ -1,0 +1,21 @@
+DECLARE @變數1 NVARCHAR(MAX) 
+DECLARE @變數2 NVARCHAR(MAX) 
+DECLARE @變數3 NVARCHAR(MAX)
+
+-- 重點!! 宣告指標變數
+DECLARE 指標變數 CURSOR FOR
+SELECT M.OrderID ,M.UserID ,M.Total FROM Order_M M
+-- 啟用指標變數
+OPEN 指標變數
+-- 以指標變數為基準點, 將取出的欄位值, 設定給我們自訂的變數
+FETCH NEXT FROM 指標變數 INTO @變數1,@變數2,@變數3
+WHILE @@FETCH_STATUS = 0
+BEGIN 
+    insert into Order_D(OrderID ,Item ,Total) values(@變數1,'1',@變數3)
+    -- 指標變數往下移動, 並將取出的欄位值, 設定給我們自訂的變數
+    FETCH NEXT FROM 指標變數 INTO @變數1,@變數2,@變數3
+END
+-- 關閉指標變數
+CLOSE 指標變數
+-- 釋放指標變數
+DEALLOCATE 指標變數
