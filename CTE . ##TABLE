@@ -1,0 +1,14 @@
+with Batch AS
+(	select UnitPrice,Quantity from Order_D
+)
+select * INTO [##Table_name] from Batch
+
+
+with a AS
+(	select UnitPrice,Quantity from Order_D
+)
+UPDATE a
+SET UnitPrice = '0'
+
+
+select * from ##Table_name
