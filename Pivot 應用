@@ -1,0 +1,47 @@
+DECLARE @OrderTable as Table(ID int, Customer varchar(8), OrderDate date, Amount int)
+
+
+insert @OrderTable(ID, Customer, OrderDate, Amount)
+select 1, 'A001', convert(date, '2018-10-01'), 100
+union all
+select 1, 'A001', convert(date, '2018-10-01'), 110
+union all
+select 2, 'A001', convert(date, '2018-10-01'), 120
+union all
+select 2, 'A001', convert(date, '2018-10-01'), 130
+union all
+select 3, 'A002', convert(date, '2018-10-01'), 200
+union all
+select 4, 'A002', convert(date, '2019-10-01'), 200
+union all
+select 4, 'A002', convert(date, '2019-10-01'), 200
+union all
+select 4, 'A002', convert(date, '2019-10-01'), 200
+union all
+select 4, 'A001', convert(date, '2019-10-01'), 200
+union all
+select 4, 'A001', convert(date, '2019-10-01'), 200;
+
+select * from @OrderTable;
+
+select OrderDate, A001, A002
+from 
+(
+	select ID, Customer, OrderDate, Amount /*多 ID 造成錯誤*/
+	from @OrderTable A
+)Src
+Pivot(
+	sum(Amount) 
+	for Customer in ( [A001], [A002])
+) PT;
+
+
+select OrderDate, A001, A002
+from(
+	select OrderDate, Customer, Amount
+	from @OrderTable A
+)Src
+Pivot(
+	sum(Amount) 
+	for Customer in ( [A001], [A002])
+) PT;
